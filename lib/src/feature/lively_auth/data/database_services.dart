@@ -43,7 +43,8 @@ class DatabaseServices {
       "members": [],
       "groudId": '',
       "recentMessage": '',
-      "recentSender": '',
+      "recentMessageSender": '',
+      "recentMessageTime": '',
     });
 
 //! updating group values
@@ -72,5 +73,66 @@ class DatabaseServices {
     DocumentReference d = groupCollection.doc(groupId);
     DocumentSnapshot documentSnapshot = await d.get();
     return documentSnapshot['admin'];
+  }
+
+  //! get group member
+  getGroupMembers(groudId) async {
+    return groupCollection.doc(groudId).snapshots();
+  }
+
+  //! initialize search button
+  searchGroupByName(String groupName) {
+    return groupCollection.where("groupName", isEqualTo: groupName).get();
+  }
+
+  //! function -- bool
+  Future<bool> isuserJoined(
+    String userName,
+    groupName,
+    groupId,
+  ) async {
+    DocumentReference userDocumentReference = userCollection.doc(userId);
+    DocumentSnapshot userDocumentSnapshot = await userDocumentReference.get();
+    List<dynamic> groups = await userDocumentSnapshot['groups'];
+    if (groups.contains("${groupId}_$groupName")) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  //! toggling group join/exit
+  Future toggleGroupJoin(String groupName, userName, groupId) async {
+    DocumentReference userDocumentReference = userCollection.doc(userId);
+    DocumentReference groupDocumentReference = groupCollection.doc(groupId);
+
+    DocumentSnapshot userDocSnapshot = await userDocumentReference.get();
+    List<dynamic> toggle = await userDocSnapshot['groups'];
+    //! if user is in group --> remove then re add them
+    if (toggle.contains("${groupId}_$groupName")) {
+      await userDocumentReference.update({
+        "groups": FieldValue.arrayRemove(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayRemove(["${userId}_$userName"])
+      });
+    } else {
+      await userDocumentReference.update({
+        "groups": FieldValue.arrayUnion(["${groupId}_$groupName"])
+      });
+      await groupDocumentReference.update({
+        "members": FieldValue.arrayUnion(["${userId}_$userName"])
+      });
+    }
+  }
+
+  //! send message
+  sendMessage(String groupId, Map<String, dynamic> chatMessageData) {
+    groupCollection.doc(groupId).collection("messages").add(chatMessageData);
+    groupCollection.doc(groupId).update({
+      "recentMessage": chatMessageData["message"],
+      "recentMessageSender": chatMessageData["sender"],
+      "recentMessageTime": chatMessageData["time"].toString(),
+    });
   }
 }
