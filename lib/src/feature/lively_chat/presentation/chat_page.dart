@@ -116,11 +116,13 @@ class _ChatPageState extends State<ChatPage> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+
 
   chatMessages() {
     return StreamBuilder(
@@ -130,12 +132,11 @@ class _ChatPageState extends State<ChatPage> {
               ? ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
-                    var theMessage = snapshot.data.docs;
                     return MessageTile(
-                        message: theMessage[index]["messages"],
-                        sender: theMessage[index]["sender"],
+                        message: snapshot.data.docs[index]["message"],
+                        sender: snapshot.data.docs[index]["sender"],
                         sendByMe:
-                            widget.userName == theMessage[index]["sender"]);
+                            widget.userName == snapshot.data.docs[index]["sender"]);
                   })
               : Container();
         });

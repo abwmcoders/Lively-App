@@ -110,10 +110,10 @@ class _GroupInfoState extends State<GroupInfo> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: primaryColor,
+                color: primaryColor.withOpacity(.2),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -177,19 +177,27 @@ class _GroupInfoState extends State<GroupInfo> {
                         leading: CircleAvatar(
                           radius: 30,
                           backgroundColor: primaryColor,
-                          child: Text(
-                            snapshot.data['members']
-                                .substring(0, 1)
-                                .toUpperCase(),
-                            style: TextStyle(
+                          child: Text(getName(snapshot.data['members'][index]).substring(0,1).toUpperCase(),
+                          style: TextStyle(
                               fontSize: UIHelper.kMediumFont,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
+                          // child: Text(
+                          //   getName(snapshot.data['members'])
+                          //       .substring(0,1)
+                          //       .toUpperCase().toString(),
+                          //   style: TextStyle(
+                          //     fontSize: UIHelper.kMediumFont,
+                          //     fontWeight: FontWeight.bold,
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
                         ),
                         title: Text(
-                          snapshot.data['members'][index],
+                          getName(snapshot.data['members'][index]),
+                          //snapshot.data['members'][index],
                           style: TextStyle(
                             fontSize: UIHelper.kMediumFont,
                             fontWeight: FontWeight.bold,
