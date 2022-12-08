@@ -42,7 +42,7 @@ void shoeSnackbar(BuildContext context, message, color) {
       color: Colors.white,
     ),),
     backgroundColor: color,
-    duration: const Duration(milliseconds: 500),
+    duration: const Duration(milliseconds: 2500),
     action: SnackBarAction(label: 'OK', onPressed: (){}, textColor: Colors.white,),
   ));
 }
